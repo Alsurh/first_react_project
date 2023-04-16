@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Shipments</title>
+	<!-- Include the Creative Tim Material Kit CSS -->
+	<link rel="stylesheet" href="C:\Users\alans\PycharmProjects\first_react_project\styles\styles.css">
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+	<!-- Create a container element to hold the table and details panel -->
+		<div id="table-container">
+		<!-- Create a table element to display the shipments data -->
+		<table id="shipments-table" class="table">
+			<thead>
+				<tr>
+					<th>Order Number</th>
+					<th>Date</th>
+					<th>Customer</th>
+					<th>Tracking Number</th>
+					<th>Status</th>
+					<th>Consignee</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- This is where the shipments data will be inserted dynamically -->
+			</tbody>
+		</table>
+		<!-- Create a details panel element to display the selected shipment's details -->
+		<div id="shipments-details" class="panel">
+			<!-- This is where the selected shipment's details will be inserted dynamically -->
+		</div>
+	</div>
+	<!-- Include your shipments.js file -->
+<!-- Add a panel element for displaying details -->
+<div id="details-panel" style="display: none;">
+	<h2>Shipment Details</h2>
+	<p id="shipment-details"></p>
+	<button id="close-btn">Close</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+var myArray = [];
+
+$.ajax({
+	method: "GET",
+	url: "https://my.api.mockaroo.com/shipments.json?key=5e0b62d0",
+	success: function(response) {
+		myArray = response;
+		buildTable(myArray);
+		console.log(response);
+	},
+	error: function(xhr, textStatus, errorThrown) {
+		// If API is unavailable, load JSON from local file
+		$.getJSON("shipment.txt", function(response) {
+			myArray = response;
+			buildTable(myArray);
+			console.log(response);
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			console.error("Failed to load JSON from local file: " + textStatus);
+		});
+	}
+});
+
+function buildTable(data) {
+	var table = document.getElementById('shipments-table');
+	for (var i = 0; i < data.length; i++) {
+		var row = `<tr>
+					<td>${data[i].orderNo}</td>
+					<td>${data[i].date}</td>
+					<td>${data[i].customer}</td>
+					<td>${data[i].trackingNo}</td>
+					<td>${data[i].status}</td>
+					<td>${data[i].consignee}</td>
+					<td><button class="details-btn" data-index="${i}">Details</button></td>
+				</tr>`;
+		table.innerHTML += row;
+	}
+
+	// Attach click event listener to details buttons
+	$('.details-btn').click(function() {
+		var index = $(this).data('index');
+		showDetailsPanel(data[index]);
+	});
+}
+
+function showDetailsPanel(details) {
+	// Generate details content
+	var detailsContent = `
+		<strong>Order No:</strong> ${details.orderNo}<br>
+		<strong>Date:</strong> ${details.date}<br>
+		<strong>Customer:</strong> ${details.customer}<br>
+		<strong>Tracking No:</strong> ${details.trackingNo}<br>
+		<strong>Status:</strong> ${details.status}<br>
+		<strong>Consignee:</strong> ${details.consignee}<br>
+	`;
+
+	// Open a new window with the details content
+	var detailsWindow = window.open("", "_blank");
+	detailsWindow.document.write(`<html><head><title>Shipment Details</title></head><body>${detailsContent}</body></html>`);
+	detailsWindow.document.close();
+}
+</script>
+</body>
+</html>
