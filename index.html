@@ -3,17 +3,44 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Shipments</title>
-	<!-- Include the Creative Tim Material Kit CSS -->
-	<link rel="stylesheet" href="C:\Users\alans\PycharmProjects\first_react_project\styles\styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+	 <style>
+      #shipments-table {
+    font-size: 14px;
+    color: #333;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+	#shipments-table tbody tr:hover {
+    background-color: #e9ecef;
+}
 
+#shipments-table thead th {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+}
+
+#details-panel {
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+#shipments-table, #details-panel {
+    transition: opacity 0.3s ease-in-out;
+}
+
+
+    </style>
 </head>
 <body>
 
-	<!-- Create a container element to hold the table and details panel -->
-		<div id="table-container">
-		<!-- Create a table element to display the shipments data -->
-		<table id="shipments-table" class="table">
+	<div id="table-container" class="container-fluid">
+		<table id="shipments-table" class="table table-striped">
 			<thead>
 				<tr>
 					<th>Order Number</th>
@@ -25,23 +52,22 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- This is where the shipments data will be inserted dynamically -->
 			</tbody>
 		</table>
-		<!-- Create a details panel element to display the selected shipment's details -->
-		<div id="shipments-details" class="panel">
-			<!-- This is where the selected shipment's details will be inserted dynamically -->
+		<div id="shipments-details" class="panel panel-default">
 		</div>
 	</div>
-	<!-- Include your shipments.js file -->
-<!-- Add a panel element for displaying details -->
-<div id="details-panel" style="display: none;">
-	<h2>Shipment Details</h2>
-	<p id="shipment-details"></p>
-	<button id="close-btn">Close</button>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<div id="details-panel" style="display: none;" class="panel panel-info">
+		<div class="panel-heading">
+			<h2>Shipment Details</h2>
+		</div>
+		<div class="panel-body">
+			<p id="shipment-details"></p>
+		</div>
+		<div class="panel-footer">
+			<button id="close-btn" class="btn btn-primary">Close</button>
+		</div>
+	</div>
 <script>
 var myArray = [];
 
@@ -90,19 +116,27 @@ function buildTable(data) {
 function showDetailsPanel(details) {
 	// Generate details content
 	var detailsContent = `
-		<strong>Order No:</strong> ${details.orderNo}<br>
-		<strong>Date:</strong> ${details.date}<br>
-		<strong>Customer:</strong> ${details.customer}<br>
-		<strong>Tracking No:</strong> ${details.trackingNo}<br>
-		<strong>Status:</strong> ${details.status}<br>
-		<strong>Consignee:</strong> ${details.consignee}<br>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<h2>Shipment Details</h2>
+
+					<p><strong>Order No:</strong> ${details.orderNo}</p>
+					<p><strong>Customer:</strong> ${details.customer}</p>
+					<p><strong>Consignee:</strong> ${details.consignee}</p>
+					<p><strong>Date:</strong> ${details.date}</p>
+					<p><strong>Tracking No:</strong> ${details.trackingNo}</p>
+					<p><strong>Status:</strong> ${details.status}</p>
+				</div>
+			</div>
+		</div>
 	`;
 
-	// Open a new window with the details content
-	var detailsWindow = window.open("", "_blank");
-	detailsWindow.document.write(`<html><head><title>Shipment Details</title></head><body>${detailsContent}</body></html>`);
+	var detailsWindow = window.open('details.html', '_blank', 'width=400,height=400');
+	detailsWindow.document.write(`<html><head><title>Shipment Details</title><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"></head><body>${detailsContent}</body></html>`);
 	detailsWindow.document.close();
 }
+
 </script>
 </body>
 </html>
